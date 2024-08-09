@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "",
+"RedirectUrl": "",
+"LaunchCommand": "",
+"WorkingDirectory": "D:\\hamrakitab\\HamraKitab",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

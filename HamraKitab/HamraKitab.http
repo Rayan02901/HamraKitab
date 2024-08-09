@@ -1,0 +1,7 @@
+@HamraKitab_HostAddress = http://localhost:5261
+
+GET {{HamraKitab_HostAddress}}/api/v1/Books
+Accept: application/json
+
+
+###
