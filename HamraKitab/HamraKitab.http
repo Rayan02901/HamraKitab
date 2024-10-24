@@ -1,7 +1,6 @@
-@HamraKitab_HostAddress = http://localhost:5261
+@BizNepal.Server_HostAddress = http://localhost:5043
 
-GET {{HamraKitab_HostAddress}}/api/v1/Books
+GET {{BizNepal.Server_HostAddress}}/
 Accept: application/json
-
 
 ###
