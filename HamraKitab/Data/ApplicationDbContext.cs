@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using HamraKitab.Models;
 using System;
 using Action = HamraKitab.Models.Action;
-using System.Reflection.Emit;
 
 namespace HamraKitab.Data
 {
@@ -14,7 +13,7 @@ namespace HamraKitab.Data
         {
         }
 
-        // DbSet for the Book model
+        // DbSets for models
         public DbSet<Book> Books { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Action> Actions { get; set; }
@@ -24,29 +23,62 @@ namespace HamraKitab.Data
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<UserProfilePhoto> UserProfilePhotos { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<BookGenre> BookGenres { get; set; }  // New DbSet for the join table
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            // Book-Genre Many-to-Many Configuration
+            builder.Entity<BookGenre>(entity =>
+            {
+                entity.HasKey(bg => new { bg.BookId, bg.GenreId });
+
+                entity.HasOne(bg => bg.Book)
+                    .WithMany(b => b.BookGenres)
+                    .HasForeignKey(bg => bg.BookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(bg => bg.Genre)
+                    .WithMany(g => g.BookGenres)
+                    .HasForeignKey(bg => bg.GenreId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Book Configuration
+            builder.Entity<Book>(entity =>
+            {
+                entity.HasKey(b => b.Id);
+
+                entity.Property(b => b.Rating)
+                    .HasColumnType("decimal(3,2)");
+
+                entity.HasOne(b => b.User)
+                    .WithMany(u => u.Books)
+                    .HasForeignKey(b => b.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(b => b.Reviews)
+                    .WithOne(r => r.Book)
+                    .HasForeignKey(r => r.BookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // UserProfile Configuration
             builder.Entity<UserProfile>(entity =>
             {
                 entity.HasKey(up => up.ProfileId);
 
-                // Configure one-to-one relationship with ApplicationUser
                 entity.HasOne(up => up.User)
                     .WithOne(au => au.Profile)
                     .HasForeignKey<UserProfile>(up => up.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                // Configure UserProfilePhotos relationship
                 entity.HasMany(up => up.UserProfilePhotos)
                     .WithOne(upp => upp.UserProfile)
                     .HasForeignKey(upp => upp.ProfileId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                // Ensure UserId is unique
                 entity.HasIndex(up => up.UserId)
                     .IsUnique();
             });
@@ -56,7 +88,6 @@ namespace HamraKitab.Data
             {
                 entity.HasKey(upp => upp.PhotoId);
 
-                // Ensure only one main photo per profile
                 entity.HasIndex(upp => new { upp.ProfileId, upp.IsMainPhoto })
                     .HasFilter("[IsMainPhoto] = 1")
                     .IsUnique();
@@ -93,32 +124,7 @@ namespace HamraKitab.Data
                     .HasForeignKey(f => f.FriendUserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                // Ensure unique friendships
                 entity.HasIndex(f => new { f.UserId, f.FriendUserId }).IsUnique();
-            });
-
-            // Book Configuration
-            builder.Entity<Book>(entity =>
-            {
-                entity.HasKey(b => b.Id);
-
-                entity.Property(b => b.Rating)
-                    .HasColumnType("decimal(3,2)");
-
-                entity.HasOne(b => b.User)
-                    .WithMany(u => u.Books)
-                    .HasForeignKey(b => b.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(b => b.Genre)
-                    .WithMany(g => g.Books)
-                    .HasForeignKey(b => b.GenreId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasMany(b => b.Reviews)
-                    .WithOne(r => r.Book)
-                    .HasForeignKey(r => r.BookId)
-                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Review Configuration
@@ -167,10 +173,6 @@ namespace HamraKitab.Data
                     .IsRequired()
                     .HasMaxLength(50);
             });
-            builder.Entity<Genre>()
-    .Navigation(g => g.Books)
-    .UsePropertyAccessMode(PropertyAccessMode.Property);
-
 
             // Seed roles
             builder.Entity<IdentityRole>().HasData(

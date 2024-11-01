@@ -77,7 +77,6 @@ namespace HamraKitab.Controllers
                 // Find user by email or username
                 var user = await _userManager.FindByEmailAsync(loginDto.UserIdentifier)
                     ?? await _userManager.FindByNameAsync(loginDto.UserIdentifier);
-
                 if (user == null)
                 {
                     return BadRequest("Invalid credentials");
@@ -100,7 +99,8 @@ namespace HamraKitab.Controllers
                 var response = new LoginResponseDto
                 {
                     JwtToken = token,
-                    Role = role
+                    Role = role,
+                    UserId = user.Id  // Add this line to include the UserId in the response
                 };
 
                 return Ok(response);
