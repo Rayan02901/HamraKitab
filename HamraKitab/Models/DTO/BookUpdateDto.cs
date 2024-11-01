@@ -13,7 +13,7 @@ namespace HamraKitab.Models.DTO
         public string Author { get; set; }
 
         [Required]
-        public Guid GenreId { get; set; }
+        public List<Guid> GenreIds { get; set; }  // List of Genre IDs for multiple genres
 
         [Required]
         public DateTime PublishedDate { get; set; }
@@ -23,6 +23,10 @@ namespace HamraKitab.Models.DTO
 
         [Range(0, int.MaxValue)]
         public int? Price { get; set; }
-        
+
+        public BookUpdateDto()
+        {
+            GenreIds = new List<Guid>();  // Initialize the GenreIds list
+        }
     }
 }

@@ -15,6 +15,8 @@ namespace HamraKitab.Models
         // Navigation property
         [JsonIgnore]
         public virtual ICollection<Book> Books { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<BookGenre> BookGenres { get; set; }
 
         public Genre()
         {

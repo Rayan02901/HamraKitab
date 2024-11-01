@@ -22,6 +22,57 @@ namespace HamraKitab.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Book", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid?>("GenreId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PublishedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Rating")
+                        .HasColumnType("decimal(3,2)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenreId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Books");
+                });
+
             modelBuilder.Entity("HamraKitab.Models.Action", b =>
                 {
                     b.Property<Guid>("ActionId")
@@ -160,55 +211,19 @@ namespace HamraKitab.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("HamraKitab.Models.Book", b =>
+            modelBuilder.Entity("HamraKitab.Models.BookGenre", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<Guid>("GenreId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PublishedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("Rating")
-                        .HasColumnType("decimal(3,2)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("BookId", "GenreId");
 
                     b.HasIndex("GenreId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Books");
+                    b.ToTable("BookGenres");
                 });
 
             modelBuilder.Entity("HamraKitab.Models.Friend", b =>
@@ -603,6 +618,21 @@ namespace HamraKitab.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Book", b =>
+                {
+                    b.HasOne("HamraKitab.Models.Genre", null)
+                        .WithMany("Books")
+                        .HasForeignKey("GenreId");
+
+                    b.HasOne("HamraKitab.Models.ApplicationUser", "User")
+                        .WithMany("Books")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HamraKitab.Models.Activity", b =>
                 {
                     b.HasOne("HamraKitab.Models.Action", "Action")
@@ -611,7 +641,7 @@ namespace HamraKitab.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HamraKitab.Models.Book", "Book")
+                    b.HasOne("Book", "Book")
                         .WithMany("Activities")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -634,23 +664,23 @@ namespace HamraKitab.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HamraKitab.Models.Book", b =>
+            modelBuilder.Entity("HamraKitab.Models.BookGenre", b =>
                 {
-                    b.HasOne("HamraKitab.Models.Genre", "Genre")
-                        .WithMany("Books")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("Book", "Book")
+                        .WithMany("BookGenres")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HamraKitab.Models.ApplicationUser", "User")
-                        .WithMany("Books")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("HamraKitab.Models.Genre", "Genre")
+                        .WithMany("BookGenres")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Book");
 
                     b.Navigation("Genre");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HamraKitab.Models.Friend", b =>
@@ -697,7 +727,7 @@ namespace HamraKitab.Migrations
 
             modelBuilder.Entity("HamraKitab.Models.Review", b =>
                 {
-                    b.HasOne("HamraKitab.Models.Book", "Book")
+                    b.HasOne("Book", "Book")
                         .WithMany("Reviews")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -787,6 +817,15 @@ namespace HamraKitab.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Book", b =>
+                {
+                    b.Navigation("Activities");
+
+                    b.Navigation("BookGenres");
+
+                    b.Navigation("Reviews");
+                });
+
             modelBuilder.Entity("HamraKitab.Models.Action", b =>
                 {
                     b.Navigation("Activities");
@@ -810,15 +849,10 @@ namespace HamraKitab.Migrations
                     b.Navigation("SentFriendRequests");
                 });
 
-            modelBuilder.Entity("HamraKitab.Models.Book", b =>
-                {
-                    b.Navigation("Activities");
-
-                    b.Navigation("Reviews");
-                });
-
             modelBuilder.Entity("HamraKitab.Models.Genre", b =>
                 {
+                    b.Navigation("BookGenres");
+
                     b.Navigation("Books");
                 });
 

@@ -15,18 +15,21 @@ namespace HamraKitab.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BookController> _logger;
+        private const int DefaultPageSize = 10;
+        private const int MaxPageSize = 50;
 
         public BookController(ApplicationDbContext context, ILogger<BookController> logger)
         {
-            _context = context;
-            _logger = logger;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooks()
         {
             var books = await _context.Books
-                .Include(b => b.Genre)
+                .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
                 .Include(b => b.User)
                 .Include(b => b.Reviews)
                     .ThenInclude(r => r.User)
@@ -35,7 +38,7 @@ namespace HamraKitab.Controllers
                     Id = b.Id,
                     Title = b.Title,
                     Author = b.Author,
-                    GenreName = b.Genre.GenreName,
+                    GenreNames = b.BookGenres.Select(bg => bg.Genre.GenreName).ToList(),
                     PublishedDate = b.PublishedDate,
                     Description = b.Description,
                     Rating = b.Rating,
@@ -60,7 +63,8 @@ namespace HamraKitab.Controllers
         public async Task<ActionResult<BookResponseDto>> GetBook(Guid id)
         {
             var book = await _context.Books
-                .Include(b => b.Genre)
+                .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
                 .Include(b => b.User)
                 .Include(b => b.Reviews)
                     .ThenInclude(r => r.User)
@@ -76,7 +80,7 @@ namespace HamraKitab.Controllers
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
-                GenreName = book.Genre.GenreName,
+                GenreNames = book.BookGenres.Select(bg => bg.Genre.GenreName).ToList(),
                 PublishedDate = book.PublishedDate,
                 Description = book.Description,
                 Rating = book.Rating,
@@ -101,28 +105,62 @@ namespace HamraKitab.Controllers
         public async Task<ActionResult<BookResponseDto>> CreateBook([FromBody] BookRequestDto bookRequest)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var genre = await _context.Genres.FirstOrDefaultAsync(g => g.GenreName == bookRequest.Genre);
 
-            if (genre == null)
+            // Verify all genres exist
+            var genres = await _context.Genres
+                .Where(g => bookRequest.Genres.Contains(g.GenreName))
+                .ToListAsync();
+
+            if (genres.Count != bookRequest.Genres.Count)
             {
-                return BadRequest("Invalid genre specified");
+                return BadRequest("One or more invalid genres specified");
             }
 
             var book = new Book
             {
                 Title = bookRequest.Title,
                 Author = bookRequest.Author,
-                GenreId = genre.GenreId,
                 PublishedDate = bookRequest.PublishedDate,
                 Description = bookRequest.Description,
                 Price = bookRequest.Price,
                 UserId = userId
             };
 
+            // Create BookGenre relationships
+            foreach (var genre in genres)
+            {
+                book.BookGenres.Add(new BookGenre
+                {
+                    Book = book,
+                    GenreId = genre.GenreId
+                });
+            }
+
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+            // Load the book with all related data for the response
+            var createdBook = await _context.Books
+                .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.Id == book.Id);
+
+            var response = new BookResponseDto
+            {
+                Id = createdBook.Id,
+                Title = createdBook.Title,
+                Author = createdBook.Author,
+                GenreNames = createdBook.BookGenres.Select(bg => bg.Genre.GenreName).ToList(),
+                PublishedDate = createdBook.PublishedDate,
+                Description = createdBook.Description,
+                Price = createdBook.Price,
+                CreatedAt = createdBook.CreatedAt,
+                UpdatedAt = createdBook.UpdatedAt,
+                UserName = createdBook.User.UserName
+            };
+
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, response);
         }
 
         [Authorize]
@@ -131,12 +169,10 @@ namespace HamraKitab.Controllers
         {
             try
             {
-                // Get the current user's ID
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                // Find the book and include Genre for validation
                 var book = await _context.Books
-                    .Include(b => b.Genre)
+                    .Include(b => b.BookGenres)
                     .FirstOrDefaultAsync(b => b.Id == id);
 
                 if (book == null)
@@ -144,28 +180,43 @@ namespace HamraKitab.Controllers
                     return NotFound("Book not found");
                 }
 
-                // Check if user owns the book
                 if (book.UserId != userId)
                 {
                     return Forbid();
                 }
 
-                // Validate if the genre exists
-                var genreExists = await _context.Genres.AnyAsync(g => g.GenreId == bookUpdate.GenreId);
-                if (!genreExists)
+                // Verify all genres exist
+                var genres = await _context.Genres
+                    .Where(g => bookUpdate.GenreIds.Contains(g.GenreId))
+                    .ToListAsync();
+
+                if (genres.Count != bookUpdate.GenreIds.Count)
                 {
-                    ModelState.AddModelError("GenreId", "Invalid genre selected");
+                    ModelState.AddModelError("GenreIds", "One or more invalid genres specified");
                     return BadRequest(ModelState);
                 }
 
-                // Update the book properties
+                // Update basic properties
                 book.Title = bookUpdate.Title;
                 book.Author = bookUpdate.Author;
-                book.GenreId = bookUpdate.GenreId;
                 book.PublishedDate = bookUpdate.PublishedDate;
                 book.Description = bookUpdate.Description;
                 book.Price = bookUpdate.Price;
                 book.UpdatedAt = DateTime.UtcNow;
+
+                // Update genres
+                // Remove existing relationships
+                _context.BookGenres.RemoveRange(book.BookGenres);
+
+                // Add new relationships
+                foreach (var genreId in bookUpdate.GenreIds)
+                {
+                    book.BookGenres.Add(new BookGenre
+                    {
+                        BookId = book.Id,
+                        GenreId = genreId
+                    });
+                }
 
                 await _context.SaveChangesAsync();
                 return NoContent();
@@ -180,12 +231,11 @@ namespace HamraKitab.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
+                _logger.LogError(ex, "Error occurred while updating book {BookId}", id);
                 return StatusCode(500, "An error occurred while updating the book");
             }
         }
 
-        // Helper method to check if book exists
         private async Task<bool> BookExists(Guid id)
         {
             return await _context.Books.AnyAsync(b => b.Id == id);
@@ -196,7 +246,9 @@ namespace HamraKitab.Controllers
         public async Task<IActionResult> DeleteBook(Guid id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books
+                .Include(b => b.BookGenres)
+                .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null)
             {
@@ -208,10 +260,12 @@ namespace HamraKitab.Controllers
                 return Forbid();
             }
 
+            _context.BookGenres.RemoveRange(book.BookGenres);
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+        
     }
 }

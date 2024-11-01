@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HamraKitab")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ed77d6aa5e961e3a67e1c2c1122b8b7e1152ede")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+39c84c78c642430b867ba063103daa62db83b44d")]
 [assembly: System.Reflection.AssemblyProductAttribute("HamraKitab")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HamraKitab")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
