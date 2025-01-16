@@ -1,8 +1,12 @@
 {
   "Files": [
     {
-      "Id": "F:\\test\\HamraKitab\\HamraKitab\\wwwroot\\uploads\\3a630d2b-cb8f-4910-bd25-2696b4609114.jpg",
+      "Id": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\uploads\\3a630d2b-cb8f-4910-bd25-2696b4609114.jpg",
       "PackagePath": "staticwebassets\\uploads\\3a630d2b-cb8f-4910-bd25-2696b4609114.jpg"
+    },
+    {
+      "Id": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\uploads\\3ddf81a5-4b83-4aa7-aecf-d2d4c1a60765.jpg",
+      "PackagePath": "staticwebassets\\uploads\\3ddf81a5-4b83-4aa7-aecf-d2d4c1a60765.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.HamraKitab.Microsoft.AspNetCore.StaticWebAssets.props",

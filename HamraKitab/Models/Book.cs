@@ -36,12 +36,14 @@ public class Book
     public virtual ICollection<BookGenre> BookGenres { get; set; }
     public virtual ICollection<Review> Reviews { get; set; }
     public virtual ICollection<Activity> Activities { get; set; }
+    public virtual ICollection<Recommendation> Recommendations { get; set; }
 
     public Book()
     {
         BookGenres = new HashSet<BookGenre>();
         Reviews = new HashSet<Review>();
         Activities = new HashSet<Activity>();
+        Recommendations = new HashSet<Recommendation>();
         CreatedAt = DateTime.UtcNow;
     }
 }

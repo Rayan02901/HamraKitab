@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "QdxS30iVZDvO6jgqpZIbcgsgEVB0Kg01M2zjohMr8U4=",
+  "Hash": "ZyqwRW58WKs31ROdjfhWodbLNLx3KdHMYR9sdszyTxw=",
   "Source": "HamraKitab",
   "BasePath": "_content/HamraKitab",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "HamraKitab\\wwwroot",
       "Source": "HamraKitab",
-      "ContentRoot": "F:\\test\\HamraKitab\\HamraKitab\\wwwroot\\",
+      "ContentRoot": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\",
       "BasePath": "_content/HamraKitab",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "F:\\test\\HamraKitab\\HamraKitab\\wwwroot\\uploads\\3a630d2b-cb8f-4910-bd25-2696b4609114.jpg",
+      "Identity": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\uploads\\3a630d2b-cb8f-4910-bd25-2696b4609114.jpg",
       "SourceId": "HamraKitab",
       "SourceType": "Discovered",
-      "ContentRoot": "F:\\test\\HamraKitab\\HamraKitab\\wwwroot\\",
+      "ContentRoot": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\",
       "BasePath": "_content/HamraKitab",
       "RelativePath": "uploads/3a630d2b-cb8f-4910-bd25-2696b4609114.jpg",
       "AssetKind": "All",
@@ -34,6 +34,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\3a630d2b-cb8f-4910-bd25-2696b4609114.jpg"
+    },
+    {
+      "Identity": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\uploads\\3ddf81a5-4b83-4aa7-aecf-d2d4c1a60765.jpg",
+      "SourceId": "HamraKitab",
+      "SourceType": "Discovered",
+      "ContentRoot": "F:\\Loozatask\\Project\\HamraKitab\\wwwroot\\",
+      "BasePath": "_content/HamraKitab",
+      "RelativePath": "uploads/3ddf81a5-4b83-4aa7-aecf-d2d4c1a60765.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\3ddf81a5-4b83-4aa7-aecf-d2d4c1a60765.jpg"
     }
   ]
 }

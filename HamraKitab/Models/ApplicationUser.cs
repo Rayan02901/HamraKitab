@@ -17,6 +17,8 @@ namespace HamraKitab.Models
         public virtual ICollection<Review> Reviews { get; set; }
         // Add navigation property for UserProfile
         public virtual UserProfile Profile { get; set; }
+        public virtual ICollection<Recommendation> Recommendations { get; set; }
+
 
 
         public ApplicationUser()
@@ -27,6 +29,7 @@ namespace HamraKitab.Models
             Books = new HashSet<Book>();
             Activities = new HashSet<Activity>();
             Reviews = new HashSet<Review>();
+            Recommendations = new HashSet<Recommendation>();
         }
     }
 }

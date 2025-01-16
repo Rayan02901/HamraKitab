@@ -1,0 +1,30 @@
+{
+  "userId": "1eb7e869-6647-4ead-b6b1-1ed471484c71",
+  "recommendations": [
+    {
+      "bookId": "890704b0-f7a5-4e00-4e82-08dcf4ddd1e6",
+      "title": "890704b0-f7a5-4e00-4e82-08dcf4ddd1e6'\n 'Harry Potter and the Deathly Hallows (Harry Potter, #7)",
+      "similarity_score": 0.9486832980505138
+    },
+    {
+      "bookId": "987cc9b4-b6fb-4740-4e80-08dcf4ddd1e6",
+      "title": "987cc9b4-b6fb-4740-4e80-08dcf4ddd1e6'\n 'Harry Potter and the Chamber of Secrets (Harry Potter, #2)",
+      "similarity_score": 0.9467292624062575
+    },
+    {
+      "bookId": "32941e49-8dcf-4a74-4e79-08dcf4ddd1e6",
+      "title": "32941e49-8dcf-4a74-4e79-08dcf4ddd1e6'\n 'The Girl with the Dragon Tattoo (Millennium, #1)",
+      "similarity_score": 0.7745966692414835
+    },
+    {
+      "bookId": "e0e48490-f60c-4784-4ea4-08dcf4ddd1e6",
+      "title": "e0e48490-f60c-4784-4ea4-08dcf4ddd1e6'\n 'Jurassic Park (Jurassic Park, #1)",
+      "similarity_score": 0.7745966692414835
+    },
+    {
+      "bookId": "663727b2-1bdc-4f30-4e7a-08dcf4ddd1e6",
+      "title": "663727b2-1bdc-4f30-4e7a-08dcf4ddd1e6'\n 'Catching Fire (The Hunger Games, #2)",
+      "similarity_score": 0.7745966692414835
+    }
+  ]
+}

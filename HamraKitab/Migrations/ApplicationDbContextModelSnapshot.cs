@@ -375,6 +375,30 @@ namespace HamraKitab.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HamraKitab.Models.Recommendation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Recommendations");
+                });
+
             modelBuilder.Entity("HamraKitab.Models.Review", b =>
                 {
                     b.Property<Guid>("ReviewId")
@@ -725,6 +749,25 @@ namespace HamraKitab.Migrations
                     b.Navigation("Requester");
                 });
 
+            modelBuilder.Entity("HamraKitab.Models.Recommendation", b =>
+                {
+                    b.HasOne("Book", "Book")
+                        .WithMany("Recommendations")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HamraKitab.Models.ApplicationUser", "User")
+                        .WithMany("Recommendations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HamraKitab.Models.Review", b =>
                 {
                     b.HasOne("Book", "Book")
@@ -823,6 +866,8 @@ namespace HamraKitab.Migrations
 
                     b.Navigation("BookGenres");
 
+                    b.Navigation("Recommendations");
+
                     b.Navigation("Reviews");
                 });
 
@@ -843,6 +888,8 @@ namespace HamraKitab.Migrations
                         .IsRequired();
 
                     b.Navigation("ReceivedFriendRequests");
+
+                    b.Navigation("Recommendations");
 
                     b.Navigation("Reviews");
 

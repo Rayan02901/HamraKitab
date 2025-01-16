@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\test\\HamraKitab\\HamraKitab\\HamraKitab.csproj": {}
+    "F:\\Loozatask\\Project\\HamraKitab\\HamraKitab.csproj": {}
   },
   "projects": {
-    "F:\\test\\HamraKitab\\HamraKitab\\HamraKitab.csproj": {
+    "F:\\Loozatask\\Project\\HamraKitab\\HamraKitab.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\test\\HamraKitab\\HamraKitab\\HamraKitab.csproj",
+        "projectUniqueName": "F:\\Loozatask\\Project\\HamraKitab\\HamraKitab.csproj",
         "projectName": "HamraKitab",
-        "projectPath": "F:\\test\\HamraKitab\\HamraKitab\\HamraKitab.csproj",
+        "projectPath": "F:\\Loozatask\\Project\\HamraKitab\\HamraKitab.csproj",
         "packagesPath": "C:\\Users\\rayan\\.nuget\\packages\\",
-        "outputPath": "F:\\test\\HamraKitab\\HamraKitab\\obj\\",
+        "outputPath": "F:\\Loozatask\\Project\\HamraKitab\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -266,6 +266,163 @@ namespace HamraKitab.Controllers
 
             return NoContent();
         }
-        
+        // GET: api/Books/list
+        [HttpGet("list")]
+        public async Task<ActionResult<IEnumerable<BookListDto>>> GetBooksList()
+        {
+            var books = await _context.Books
+                .Select(b => new BookListDto
+                {
+                    Id = b.Id,
+                    Title = b.Title
+                })
+                .ToListAsync();
+
+            return Ok(books);
+        }
+        /// <summary>
+        /// Gets all books for a specific genre
+        /// </summary>
+        /// <param name="genreId">The ID of the genre to filter by</param>
+        /// <returns>List of books with basic information</returns>
+        [HttpGet("byGenre/{genreId}")]
+        public async Task<ActionResult<IEnumerable<BookByGenreDto>>> GetBooksByGenre(Guid genreId)
+        {
+            var books = await _context.Books
+                .Include(b => b.BookGenres)
+                .Where(b => b.BookGenres.Any(bg => bg.GenreId == genreId))
+                .Select(b => new BookByGenreDto
+                {
+                    BookId = b.Id,
+                    Title = b.Title,
+                    Author = b.Author
+                })
+                .ToListAsync();
+
+            if (!books.Any())
+            {
+                return NotFound($"No books found for genre with ID: {genreId}");
+            }
+
+            return Ok(books);
+        }
+        [HttpGet("wanttoread")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<BookByActivityDto>>> GetWantToReadBooks()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var wantToReadActionId = Guid.Parse("8c8f1ed5-1dbd-400f-9f99-2a1e7a38db8b");
+
+                var books = await _context.Activities
+                    .Where(a => a.UserId == userId && a.ActionId == wantToReadActionId)
+                    .Include(a => a.Book)
+                    .Select(a => new BookByActivityDto
+                    {
+                        BookId = a.Book.Id,
+                        Title = a.Book.Title,
+                        Author = a.Book.Author
+                    })
+                    .ToListAsync();
+
+                return Ok(books);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving want to read books for user");
+                return StatusCode(500, "An error occurred while retrieving the books");
+            }
+        }
+
+        [HttpGet("read")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<BookByActivityDto>>> GetReadBooks()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var readActionId = Guid.Parse("b11ac0d4-ff79-4024-bcd5-32bf2e6d252d");
+                var startedActionId = Guid.Parse("e2ccf236-783f-42bc-bbb5-f72dd850d614");
+
+                // First get all read books
+                var readBooks = await _context.Activities
+                    .Where(a => a.UserId == userId && a.ActionId == readActionId)
+                    .Select(a => new
+                    {
+                        BookId = a.BookId,
+                        CompletedAt = a.CreatedAt,
+                        Book = a.Book
+                    })
+                    .ToListAsync();
+
+                // Then get their start dates if they exist
+                var startDates = await _context.Activities
+                    .Where(a => a.UserId == userId &&
+                               a.ActionId == startedActionId &&
+                               readBooks.Select(rb => rb.BookId).Contains(a.BookId))
+                    .Select(a => new
+                    {
+                        BookId = a.BookId,
+                        StartedAt = a.CreatedAt
+                    })
+                    .ToDictionaryAsync(x => x.BookId, x => x.StartedAt);
+
+                // Combine the data
+                var result = readBooks.Select(rb => new BookByActivityDto
+                {
+                    BookId = rb.BookId,
+                    Title = rb.Book.Title,
+                    Author = rb.Book.Author,
+                    StartedAt = startDates.ContainsKey(rb.BookId) ? startDates[rb.BookId] : null,
+                    CompletedAt = rb.CompletedAt
+                }).ToList();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving read books for user");
+                return StatusCode(500, "An error occurred while retrieving the books");
+            }
+        }
+        [HttpGet("started")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<BookByActivityDto>>> GetStartedBooks()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var startedActionId = Guid.Parse("e2ccf236-783f-42bc-bbb5-f72dd850d614");
+
+                var books = await _context.Activities
+                    .Where(a => a.UserId == userId && a.ActionId == startedActionId)
+                    .Include(a => a.Book)
+                    .Select(a => new BookByActivityDto
+                    {
+                        BookId = a.Book.Id,
+                        Title = a.Book.Title,
+                        Author = a.Book.Author
+                    })
+                    .ToListAsync();
+
+                return Ok(books);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving started books for user");
+                return StatusCode(500, "An error occurred while retrieving the books");
+            }
+        }
+
     }
 }

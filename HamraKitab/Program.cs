@@ -25,7 +25,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "BizNepal API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "HamraKitab API", Version = "v1" });
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Name = "Authorization",

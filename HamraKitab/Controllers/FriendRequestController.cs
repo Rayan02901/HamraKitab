@@ -76,6 +76,7 @@ namespace HamraKitab.Controllers
         }
 
         // GET: api/FriendRequest
+        // FriendRequestController.cs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FriendRequestDto>>> GetReceivedFriendRequests()
         {
@@ -84,11 +85,15 @@ namespace HamraKitab.Controllers
                 return Unauthorized();
 
             var requests = await _context.FriendRequests
+                .Include(fr => fr.Requester)
+                    .ThenInclude(u => u.Profile)  // Changed from UserProfile to Profile
                 .Where(fr => fr.RecipientId == userId && !fr.IsAccepted)
                 .Select(fr => new FriendRequestDto
                 {
                     FriendRequestId = fr.FriendRequestId,
                     RequesterId = fr.RequesterId,
+                    RequesterUsername = fr.Requester.UserName,
+                    RequesterFullName = fr.Requester.Profile.FullName,  // Changed from UserProfile to Profile
                     RecipientId = fr.RecipientId,
                     CreatedAt = fr.CreatedAt,
                     IsAccepted = fr.IsAccepted
