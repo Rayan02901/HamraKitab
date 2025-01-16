@@ -158,5 +158,49 @@ namespace HamraKitab.Controllers
                 CreatedAt = activity.CreatedAt
             };
         }
+        [HttpGet("user-book-activities")]
+        public async Task<ActionResult<IEnumerable<UserBookIdsDto>>> GetUserBookActivities(
+    [FromQuery] int minBookCount = 5)
+        {
+            try
+            {
+                // Get users who have activities with at least minBookCount unique books
+                var userBookActivities = await _context.Activities
+                    .GroupBy(a => a.UserId)
+                    .Select(g => new
+                    {
+                        UserId = g.Key,
+                        UniqueBookCount = g.Select(a => a.BookId).Distinct().Count(),
+                        BookIds = g.Select(a => a.BookId).Distinct()
+                    })
+                    .Where(u => u.UniqueBookCount >= minBookCount)
+                    .ToListAsync();  // Execute the query here
+
+                // Then transform the results in memory
+                var result = userBookActivities.Select(u => new UserBookIdsDto
+                {
+                    UserId = u.UserId,
+                    BookIds = u.BookIds.ToList()
+                }).ToList();
+
+                if (!result.Any())
+                {
+                    return NotFound(new { Message = $"No users found with activities on {minBookCount} or more unique books." });
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, new { Message = "An error occurred while retrieving user book activities.", Error = ex.Message });
+            }
+        }
+
+        
+
+
+
+
     }
 }

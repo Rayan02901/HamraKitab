@@ -53,6 +53,32 @@
   },
   {
     "ContainingType": "HamraKitab.Controllers.ActivityController",
+    "Method": "GetUserBookActivities",
+    "RelativePath": "api/Activity/user-book-activities",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "minBookCount",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.UserBookIdsDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.ActivityController",
     "Method": "GetUserActivities",
     "RelativePath": "api/Activity/user/{userId}",
     "HttpMethod": "GET",
@@ -229,6 +255,112 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "HamraKitab.Controllers.BookController",
+    "Method": "GetBooksByGenre",
+    "RelativePath": "api/Book/byGenre/{genreId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "genreId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.BookByGenreDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.BookController",
+    "Method": "GetBooksList",
+    "RelativePath": "api/Book/list",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.BookListDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.BookController",
+    "Method": "GetReadBooks",
+    "RelativePath": "api/Book/read",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.BookByActivityDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.BookController",
+    "Method": "GetStartedBooks",
+    "RelativePath": "api/Book/started",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.BookByActivityDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.BookController",
+    "Method": "GetWantToReadBooks",
+    "RelativePath": "api/Book/wanttoread",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.BookByActivityDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "HamraKitab.Controllers.FriendController",
     "Method": "GetFriends",
     "RelativePath": "api/Friend",
@@ -263,6 +395,37 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.FriendActivitiesController",
+    "Method": "GetFriendActivities",
+    "RelativePath": "api/FriendActivities/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "HamraKitab.Models.DTO.PaginatedResponse\u00601[[HamraKitab.Models.DTO.FriendActivityDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "HamraKitab.Controllers.FriendRequestController",
@@ -478,6 +641,99 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "HamraKitab.Controllers.RecommendationController",
+    "Method": "AddRecommendation",
+    "RelativePath": "api/Recommendation/add",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "bookId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.RecommendationController",
+    "Method": "RemoveAllRecommendations",
+    "RelativePath": "api/Recommendation/all/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.RecommendationController",
+    "Method": "GetBooksWithGenres",
+    "RelativePath": "api/Recommendation/books-with-genres",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.BookGenreDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.RecommendationController",
+    "Method": "GetUserRecommendations",
+    "RelativePath": "api/Recommendation/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.ReviewController",
+    "Method": "GetReviews",
+    "RelativePath": "api/Review",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.AllReviewDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "HamraKitab.Controllers.ReviewController",
     "Method": "DeleteReview",
     "RelativePath": "api/Review/{id}",
@@ -541,6 +797,26 @@
     "ReturnTypes": [
       {
         "Type": "HamraKitab.Models.DTO.ReviewDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.ReviewController",
+    "Method": "GetReviewsforRecommendation",
+    "RelativePath": "api/Review/recommendations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[HamraKitab.Models.DTO.RecommendationReviewDto, HamraKitab, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -763,5 +1039,40 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HamraKitab.Controllers.UserProfileController",
+    "Method": "GetProfileByUserId",
+    "RelativePath": "api/UserProfile/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "HamraKitab.Models.UserProfile",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
   }
 ]

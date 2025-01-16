@@ -198,7 +198,24 @@ namespace HamraKitab.Controllers
 
             return NoContent();
         }
+        [HttpGet("user/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserProfile>> GetProfileByUserId(string userId)
+        {
+            var userProfile = await _context.UserProfiles
+                .Include(p => p.UserProfilePhotos)
+                .Include(p => p.Activities)
+                .Include(p => p.Friends)
+                .FirstOrDefaultAsync(p => p.UserId == userId);
 
+            if (userProfile == null)
+            {
+                return NotFound(new { message = $"No profile found for user ID: {userId}" });
+            }
+
+            return Ok(userProfile);
+        }
         // DELETE: api/userprofile/photos/{photoId}
         [HttpDelete("photos/{photoId}")]
         public async Task<IActionResult> DeletePhoto(Guid photoId)

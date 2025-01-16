@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Isb7kTVwP9o=",
+  "dgSpecHash": "ha1Ny9mdquQ=",
   "success": true,
-  "projectFilePath": "F:\\test\\HamraKitab\\HamraKitab\\HamraKitab.csproj",
+  "projectFilePath": "F:\\Loozatask\\Project\\HamraKitab\\HamraKitab.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rayan\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\rayan\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",

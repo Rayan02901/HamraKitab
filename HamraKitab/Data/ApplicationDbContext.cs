@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using HamraKitab.Models;
 using System;
 using Action = HamraKitab.Models.Action;
+using System.Reflection.Emit;
 
 namespace HamraKitab.Data
 {
@@ -23,6 +24,8 @@ namespace HamraKitab.Data
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<UserProfilePhoto> UserProfilePhotos { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<Recommendation> Recommendations { get; set; }
+
         public DbSet<BookGenre> BookGenres { get; set; }  // New DbSet for the join table
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -44,6 +47,15 @@ namespace HamraKitab.Data
                     .HasForeignKey(bg => bg.GenreId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+            builder.Entity<Recommendation>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Recommendations)
+                .HasForeignKey(r => r.UserId);
+
+            builder.Entity<Recommendation>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Recommendations)
+                .HasForeignKey(r => r.BookId);
 
             // Book Configuration
             builder.Entity<Book>(entity =>

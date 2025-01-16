@@ -39,6 +39,56 @@ namespace HamraKitab.Controllers
 
             return Ok(reviews);
         }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AllReviewDto>>> GetReviews()
+        {
+            var reviews = await _context.Reviews
+                .Include(r => r.User)
+                    .ThenInclude(u => u.Profile)
+                .Include(r => r.Book)
+                .OrderByDescending(r => r.ReviewDate)
+                .Select(r => new AllReviewDto
+                {
+                    ReviewId = r.ReviewId,
+                    UserName = r.User.UserName,
+                    UserId = r.User.Id,
+                    BookId = r.Book.Id, // Fixed: Changed BookID to BookId
+                    BookName = r.Book.Title,
+                    Comment = r.Comment,
+                    Rating = r.Rating,
+                    ReviewDate = r.ReviewDate,
+                    ProfileId = r.User.Profile != null ? r.User.Profile.ProfileId : null // Handle null Profile
+                })
+                .ToListAsync();
+
+            return Ok(reviews);
+        }
+        [HttpGet("recommendations")]
+        public async Task<ActionResult<IEnumerable<RecommendationReviewDto>>> GetReviewsforRecommendation()
+        {
+            // First, get users with 5 or more reviews
+            var usersWithEnoughReviews = await _context.Reviews
+                .GroupBy(r => r.User.Id)
+                .Where(g => g.Count() >= 5)
+                .Select(g => g.Key)
+                .ToListAsync();
+
+            // Then get the reviews for those users
+            List<RecommendationReviewDto> reviews = await _context.Reviews
+                .Include(r => r.User)
+                .Include(r => r.Book)
+                .Where(r => usersWithEnoughReviews.Contains(r.User.Id))
+                .OrderByDescending(r => r.ReviewDate)
+                .Select(r => new RecommendationReviewDto
+                {
+                    UserId = r.User.Id,
+                    BookId = r.Book.Id,
+                    Rating = r.Rating,
+                })
+                .ToListAsync();
+
+            return Ok(reviews);
+        }
 
         [Authorize]
         [HttpPost("book/{bookId}")]
